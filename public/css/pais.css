@@ -1,0 +1,347 @@
+/* General */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: white;
+
+}
+
+/* Logo */
+.countryinspectorsombra {
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease-in-out;
+    will-change: transform;
+    image-rendering: auto;
+    transform: scale(0.70);
+}
+
+.countryinspectorsombra::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse 100% 100% at center, rgba(51, 51, 51, 1) 0%, rgba(255, 255, 255, 0) 50%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.countryinspectorlogo {
+    position: relative;
+    z-index: 1;
+    will-change: transform;
+    image-rendering: auto;
+}
+
+.countryinspectorsombra:hover {
+    transform: scale(0.80);
+}
+
+.countryinspectorsombra:hover::before {
+    background: radial-gradient(ellipse 100% 100% at center, rgb(61, 61, 61) 0%, rgba(255, 255, 255, 0) 50%);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Página del país */
+.pais-container {
+    padding: 0 1.5rem;
+    border-radius: 10px;
+    color: white;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    max-width: 1500px;
+    margin-top: -30px;
+    position: relative;
+    z-index: 10;
+}
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.btn-volver {
+    background-color: rgba(0, 0, 0, 0.30);
+    border-radius: 15px;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    margin-right: auto;
+    text-decoration: none;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+}
+
+.btn-volver:hover {
+    color: #cccccc;
+    text-shadow: 0 0 8px rgba(83, 0, 161, 0.7);
+    text-decoration: none;
+    transform: scale(1.05);
+}
+
+.pais-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.pais-flag-placeholder {
+    width: 40px;
+    height: 30px;
+    margin-right: 15px;
+    border-radius: 5px;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+}
+
+.pais-header h2 {
+    margin: 0;
+}
+
+/* Botones de navegación */
+.tabs-main {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    margin-top: 0;
+}
+
+.tabs-secondary {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    /* Espacio entre botones */
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 10px 0;
+    width: 120px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 0 10px rgba(83, 0, 161, 0.4), 0 0 20px rgba(0, 119, 255, 0.2);
+    text-align: center;
+}
+
+.tab-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(83, 0, 161, 0.6), 0 0 30px rgba(0, 119, 255, 0.3);
+}
+
+.tab-button.active {
+    background-color: rgba(83, 0, 161, 0.6);
+    color: white;
+    box-shadow: 0 0 15px rgba(83, 0, 161, 0.7), 0 0 30px rgba(0, 119, 255, 0.4);
+    font-weight: bold;
+    transform: scale(1.05);
+}
+
+.tabs-main .tab-button {
+    background-color: rgba(83, 0, 161, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+
+}
+
+/* Panel de contenido */
+.content-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    min-height: 475px;
+    box-shadow: inset 0 0 20px rgba(83, 0, 161, 0.3), 0 0 15px rgba(0, 119, 255, 0.2);
+    overflow: auto;
+}
+
+.tab-content {
+    display: none;
+    width: 100%;
+    text-align: left;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Botón comparar */
+.action-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.btn-comparar {
+    background-color: rgba(83, 0, 161, 0.7);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(83, 0, 161, 0.5), 0 0 30px rgba(0, 119, 255, 0.3);
+}
+
+.btn-comparar:hover {
+    background-color: rgba(83, 0, 161, 0.9);
+    box-shadow: 0 0 20px rgba(83, 0, 161, 0.7), 0 0 40px rgba(0, 119, 255, 0.4);
+}
+
+/* Animación skeleton */
+.skeleton {
+    background-color: #ccc;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Tiempo */
+.weather-grid {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    height: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+}
+
+#weather-title {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.weather-card {
+    flex: 1;
+    background: rgba(85, 85, 85, 0.185);
+    border: 1px solid rgba(255, 255, 255, 0.384);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
+    max-height: 100%;
+    box-sizing: border-box;
+    box-shadow:  0 0 10px rgba(83, 0, 161, 0.7);
+    transition: all 0.3s ease;
+}
+.weather-card:nth-child(1) {
+    opacity:0.4;
+}
+.weather-card:nth-child(2) {
+    background-color: rgba(83, 0, 161, 0.7);
+    transform: translateY(-10px);
+}
+.weather-content {
+    width: 100%;
+}
+.weather-card:hover{
+    transform: translateY(-10px);
+    background-color: rgba(120, 3, 230, 0.7);
+}
+.weather-card img {
+    width: 100px;
+    height: 100px;
+    margin-top: 50px;
+    object-fit: contain;
+}
+
+
+
+/* Media query para dispositivos móviles */
+@media (max-width: 768px) {
+    .pais-container {
+        padding: 1rem;
+        width: 95%;
+    }
+
+    .tabs-secondary {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tab-button {
+        width: 80%;
+    }
+
+    .countryinspectorsombra {
+        transform: scale(0.75);
+    }
+
+    .content-panel {
+        min-height: 250px;
+    }
+
+    .weather-card {
+        min-width: 140px;
+        flex: none;
+    }
+
+    .weather-grid {
+        overflow-x: auto;
+    }
+}
