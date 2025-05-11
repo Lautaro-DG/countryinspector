@@ -12,6 +12,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" href="{{ asset('img/countryinspectoricono.ico') }}" type="image/x-icon">
 
 </head>
 <style>
@@ -47,6 +49,8 @@
         const video = document.getElementById('video');
         video.playbackRate = 0.70;
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 
 </html>

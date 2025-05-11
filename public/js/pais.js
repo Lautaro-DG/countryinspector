@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('summary').innerHTML = summaryHtml;
 
         const capital = country.capital ? country.capital[0] : '';
+        const countryISO3 = country.cca3;
 
         buttons.forEach(button => {
             button.addEventListener('click', () => {
@@ -45,6 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         break;
                     case 'news':
                         getNewsData(countryName);
+                        break;
+                    case 'history':
+                        createHistoryCarousel(countryName);
+                        break;
+                    case 'statistics':
+                        getStatisticsData(countryISO3);
                         break;
                 }
             });

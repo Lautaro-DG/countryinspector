@@ -8,7 +8,7 @@
     <div class="header-container">
 
         <div class="pais-header">
-            <a href="/" class="btn-volver">&lt; VOLVER</a>
+            <a href="/" class="btn-volver">&lt; BACK</a>
             <img id="pais-flag" class="pais-flag-placeholder skeleton" />
             <h2 id="pais-nombre"></h2>
         </div>
@@ -19,11 +19,20 @@
     </div>
 
     <div class="tabs-secondary">
-        <button class="tab-button" data-tab="weather">WEATHER</button>
-        <button class="tab-button" data-tab="history">HISTORY</button>
-        <button class="tab-button" data-tab="news">NEWS</button>
-        <button class="tab-button" data-tab="statistics">STATS</button>
+        <button class="tab-button" data-tab="weather">
+            <i class="fas fa-cloud-sun"></i> <span class="tab-text">WEATHER</span>
+        </button>
+        <button class="tab-button" data-tab="history">
+            <i class="fas fa-landmark"></i> <span class="tab-text">HISTORY</span>
+        </button>
+        <button class="tab-button" data-tab="news">
+            <i class="fas fa-newspaper"></i> <span class="tab-text">NEWS</span>
+        </button>
+        <button class="tab-button" data-tab="statistics">
+            <i class="fas fa-chart-bar"></i> <span class="tab-text">STATS</span>
+        </button>
     </div>
+
 
     <div class="content-panel">
         <div id="summary" class="tab-content active">
@@ -58,9 +67,12 @@
 
 <script>
     const countryNameBlade = "{{ $nombre }}";
+    document.title = `Country Inspector | ${countryNameBlade}`;
 </script>
 <script src="{{ asset('js/pais.js') }}"></script>
 <script src="{{ asset('js/weather.js') }}"></script>
 <script src="{{ asset('js/news.js') }}"></script>
+<script src="{{ asset('js/history.js') }}"></script>
+<script src="{{ asset('js/statistics.js') }}"></script>
 
 @endsection
