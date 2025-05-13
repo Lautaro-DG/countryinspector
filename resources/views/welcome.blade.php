@@ -37,6 +37,6 @@
     mapboxgl.accessToken = '{{ env("MAPBOX_TOKEN") }}'; 
 </script> 
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/search-history.js') }}"></script>
+<script src="{{ asset('js/user_history.js') }}"></script>
 @endsection 
 @endsection

@@ -32,8 +32,6 @@
             <i class="fas fa-chart-bar"></i> <span class="tab-text">STATS</span>
         </button>
     </div>
-
-
     <div class="content-panel">
         <div id="summary" class="tab-content active">
             <img src="/img/loading.gif" class="cargar" alt="Cargando..." />

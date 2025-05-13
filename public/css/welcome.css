@@ -19,6 +19,7 @@ html {
     display: inline-block;
     transition: all 0.3s ease-in-out;
     will-change: transform;
+    margin-top: 3rem;
     image-rendering: auto;
 }
 
@@ -38,7 +39,6 @@ html {
 .countryinspectorlogo {
     position: relative;
     z-index: 1;
-    margin-top: 3rem;
     will-change: transform;
     image-rendering: auto;
 }
@@ -67,12 +67,39 @@ h1 {
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
+/* Perfil y login */
+.logo-container {
+    position: absolute;
+    top: 20px;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.icons-container {
+    display: flex;
+    gap: 1rem;
+    /* Espacio entre los íconos */
+    align-items: center;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+}
+
+.icon i {
+    margin-right: 0.5rem;
+}
+
 /* Página principal (globo 3d) */
 .globe-container {
     width: 100%;
     max-width: 700px;
     aspect-ratio: 1 / 1;
-    margin-bottom: 5rem;
     border-radius: 5%;
 }
 
@@ -141,13 +168,12 @@ h1 {
     align-items: center;
 }
 
-/* Manteniendo los estilos originales del input */
 .search-input {
-    margin-bottom: 0; /* Cambio para que el margen lo maneje el contenedor */
+    margin-bottom: 0;
     width: 100%;
     max-width: 500px;
     padding: 10px;
-    padding-right: 40px; /* Espacio para el icono */
+    padding-right: 40px;
     border-radius: 5px;
     border: none;
     background-color: rgba(255, 255, 255, 0.2);
@@ -170,21 +196,20 @@ h1 {
     transition: color 0.3s ease;
 }
 
-/* Estilos para el icono de historial */
+/* Historial */
 .history-icon {
-    position: absolute;
-    right: 10px;
-    color: #fff;
     cursor: pointer;
-    font-size: 18px;
-    transition: transform 0.3s ease;
+    margin-left: 10px;
+    font-size: 1.2em;
+    color: #747474;
+    transition: color 0.3s ease;
 }
 
 .history-icon:hover {
-    transform: scale(1.2);
+    color: #8b0fff;
 }
 
-/* Estilos para el modal de historial */
+/* Estilos para el modal */
 .history-modal {
     display: none;
     position: fixed;
@@ -194,89 +219,198 @@ h1 {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-    background-color: rgba(30, 30, 30, 0.95);
+    background-color: #fff;
     margin: 10% auto;
     padding: 20px;
     border-radius: 8px;
-    width: 60%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
     max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: #fff;
     position: relative;
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
     color: #aaa;
-    float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
-    transition: color 0.3s ease;
 }
 
 .close-modal:hover {
-    color: #fff;
+    color: #333;
 }
 
-#history-list {
-    margin-top: 15px;
+.history-modal h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Estilos para la lista de historial */
+.history-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     max-height: 300px;
     overflow-y: auto;
 }
 
 .history-item {
-    padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.3s ease;
+}
+
+.history-item:last-child {
+    border-bottom: none;
 }
 
 .history-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #f8f9fa;
 }
 
-.history-item-text {
+.history-item.fading-out {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.country-flag {
+    margin-right: 12px;
+    width: 24px;
+    height: 16px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.flag-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    vertical-align: middle;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.country-name {
+    font-weight: bold;
+    color: #333;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     flex-grow: 1;
-    text-transform: capitalize;
-    font-weight: 500;
+    margin-right: 10px;
 }
 
-.delete-history-item {
-    color: #ff6b6b;
+.visit-date {
+    color: #777;
+    font-size: 0.85em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 10px;
+}
+
+.delete-icon {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.2s linear;
     cursor: pointer;
-    font-size: 16px;
-    opacity: 0.7;
-    margin-left: 10px;
-    transition: opacity 0.2s ease;
+    color: #dc3545;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
-.delete-history-item:hover {
+.history-item:hover .delete-icon {
+    visibility: visible;
     opacity: 1;
 }
 
-#history-list::-webkit-scrollbar {
-    width: 8px;
+.delete-icon:hover {
+    background-color: rgba(220, 53, 69, 0.1);
 }
 
-#history-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+/* Botón para borrar todo el historial */
+.clear-all-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #dc3545;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: absolute;
+    right: 15px;
+    top: 15px;
 }
 
-#history-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+.clear-all-btn:hover {
+    background-color: #f1f1f1;
+    border-color: #dc3545;
 }
 
-#history-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
+/* Estilo para el mensaje de carga o sin resultados */
+#history-list p {
+    text-align: center;
+    color: #666;
+    padding: 15px;
+}
+
+.loading-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading-text i {
+    color: #007bff;
 }
 
 .suggestions-container {
@@ -302,6 +436,7 @@ h1 {
 .suggestion-item.active {
     background-color: #f0f8ff;
 }
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -324,8 +459,78 @@ h1 {
     h1 {
         font-size: 2rem;
     }
-    .countryinspectorlogo{
+
+    .countryinspectorlogo {
         transform: scale(0.75);
     }
 
+}
+
+/* Mejora para responsive */
+@media (max-width: 600px) {
+    .modal-content {
+        margin: 20% auto;
+        width: 90%;
+        padding: 15px;
+    }
+
+    .history-modal h2 {
+        font-size: 1.3em;
+    }
+
+    .clear-all-btn {
+        top: 10px;
+        right: 10px;
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .country-name {
+        font-size: 0.95em;
+    }
+
+    .visit-date {
+        font-size: 0.75em;
+    }
+
+    .delete-icon {
+        width: 20px;
+        height: 20px;
+        visibility: visible;
+        opacity: 1;
+        justify-self: flex-end;
+        align-self: flex-end;
+    }
+
+    .close-modal {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .modal-content {
+        margin: 25% auto;
+        width: 95%;
+    }
+
+    .history-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .history-item:has(.delete-icon) {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .visit-date {
+        margin-right: 0;
+    }
+
+    .clear-all-btn {
+        font-size: 14px;
+        padding: 8px 8px;
+    }
 }
