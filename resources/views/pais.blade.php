@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/pais.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
 @endsection
 @section('contenido')
 <div class="pais-container">
@@ -31,6 +32,9 @@
         <button class="tab-button" data-tab="statistics">
             <i class="fas fa-chart-bar"></i> <span class="tab-text">STATS</span>
         </button>
+        <button class="tab-button" data-tab="rating">
+            <i class="fa-regular fa-star"></i> <span class="tab-text">RATING</span>
+        </button>
     </div>
     <div class="content-panel">
         <div id="summary" class="tab-content active">
@@ -48,6 +52,13 @@
         <div id="statistics" class="tab-content">
             <img src="/img/loading.gif" class="cargar" alt="Cargando..." />
         </div>
+        <div id="rating" class="tab-content">
+            <div id="user-review-section">
+            </div>
+            <div id="ratings-list">
+                <img src="/img/loading.gif" class="cargar" alt="Cargando..." />
+            </div>
+        </div>
     </div>
 
     <div class="action-bar">
@@ -62,7 +73,7 @@
     </div>
 </div>
 
-
+@section('scripts')
 <script>
     const countryNameBlade = "{{ $nombre }}";
     document.title = `Country Inspector | ${countryNameBlade}`;
@@ -72,5 +83,10 @@
 <script src="{{ asset('js/news.js') }}"></script>
 <script src="{{ asset('js/history.js') }}"></script>
 <script src="{{ asset('js/statistics.js') }}"></script>
+<script src="{{ asset('js/ratings.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+
+@endsection
 @endsection

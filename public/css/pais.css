@@ -58,11 +58,6 @@ html {
     text-align: center;
 }
 
-h1 {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-}
 
 /* Página del país */
 .pais-container {
@@ -869,6 +864,176 @@ h1 {
 .category-select:hover {
     box-shadow: 0 0 15px rgba(83, 0, 161, 0.6), 0 0 30px rgba(0, 119, 255, 0.3);
 }
+
+/* Ratings */
+.editor-toolbar {
+    background-color: #1a66c9;
+    border: 1px solid black;
+    border-bottom: none;
+}
+
+.rating-entry {
+    background: #21212162;
+    color: white;
+    border-radius: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rating-entry:hover {
+    transform: scale(1.01);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+.rating-entry strong {
+    font-size: 1.2rem;
+    color: #1a73e8;
+}
+
+.rating-entry em {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.rating-entry span {
+    display: inline-block;
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+    color: #f4c150;
+}
+
+.review-markdown {
+    color: black;
+    max-height: 375px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    background: #f8f9fa;
+    border-left: 4px solid #1a66c9;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.review-markdown ul {
+    padding-left: 1rem;
+}
+
+#user-review-section {
+    font-family: "Space Grotesk", sans-serif;
+}
+
+#user-review-section #save-rating,
+#user-review-section #edit-rating,
+#user-review-section #cancel-edit,
+#user-review-section #delete-rating {
+    gap: 10px;
+    font-family: "Space Grotesk", sans-serif;
+    background-color: #1a66c9;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#user-review-section button:hover {
+    background-color: #0f4d8f;
+}
+
+#user-review-section #delete-rating {
+    background-color: rgb(190, 51, 16);
+}
+
+#user-review-section #cancel-edit {
+    background-color: rgb(190, 51, 16);
+}
+
+
+#ratings-list {
+    font-family: "Space Grotesk", sans-serif;
+}
+
+#user-review-readonly {
+    background: #21212162;
+    border: 2px solid #1a66c9;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+#rating-form {
+    background: #21212162;
+    border: 2px solid #1a66c9;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+}
+
+#rating-form h4 {
+    color: white;
+
+}
+
+#star-container {
+    font-size: 2rem;
+    user-select: none;
+    line-height: 1.2;
+    padding: 20px 0;
+}
+
+.star {
+    transition: color 0.2s;
+    padding: 0 0.1rem;
+}
+
+.star:hover {
+    color: #f4c150;
+}
+
+textarea.form-control {
+    min-height: 150px;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom,
+            rgba(83, 0, 161, 0.95) 0%,
+            rgba(83, 0, 161, 0.95) 60%,
+            #1a66c9 100%);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(83, 0, 161, 1);
+}
+
 /* Media query para dispositivos móviles */
 @media (max-width: 768px) {
     .pais-container {
@@ -927,6 +1092,7 @@ h1 {
         display: none;
     }
 }
+
 @media (max-width: 768px) {
     .tabs-secondary .tab-text {
         display: none;
@@ -945,7 +1111,12 @@ h1 {
         align-items: center;
         display: flex;
     }
-    .tabs-secondary{
+
+    .tabs-secondary {
         flex-direction: row;
+    }
+
+    .tab-text {
+        display: none;
     }
 }

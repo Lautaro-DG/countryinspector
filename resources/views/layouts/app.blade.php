@@ -14,6 +14,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ asset('img/countryinspectoricono.ico') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 
 </head>
 <style>

@@ -49,4 +49,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Historial::class);
     }
+    public function countryRatings()
+    {
+        return $this->hasMany(CountryUserRating::class);
+    }
 }

@@ -189,7 +189,7 @@ h1 {
 
 .search-input:focus {
     outline: none;
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
 .search-input::placeholder {
