@@ -9,15 +9,28 @@ use App\Models\CountryRating;
 
 class CountryRatingController extends Controller
 {
-    public function showRatings($countryCode)
-    {
-        $ratings = CountryUserRating::where('country_code', $countryCode)
-            ->with('user')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json($ratings);
-    }
+   
+public function showRatings($countryCode, Request $request)
+{
+    $perPage = 5;
+    $page = $request->input('page', 1);
+    $offset = ($page - 1) * $perPage;
+    
+    $ratings = CountryUserRating::where('country_code', $countryCode)
+        ->with('user')
+        ->orderBy('created_at', 'desc')
+        ->offset($offset)
+        ->limit($perPage)
+        ->get();
+    
+    $totalRatings = CountryUserRating::where('country_code', $countryCode)->count();
+    
+    return response()->json([
+        'ratings' => $ratings,
+        'total' => $totalRatings,
+        'hasMore' => $totalRatings > ($offset + $perPage)
+    ]);
+}
 
 
     public function checkUserRating(Request $request, $countryCode)
@@ -72,7 +85,7 @@ class CountryRatingController extends Controller
             'review' => $request->review,
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Valoración guardada']);
+        return response()->json(['success' => true, 'message' => 'Review successfully created']);
     }
     public function updateRating(Request $request)
     {
@@ -95,7 +108,7 @@ class CountryRatingController extends Controller
             'review' => $request->review,
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Valoración actualizada']);
+        return response()->json(['success' => true, 'message' => 'Review successfully updated']);
     }
     public function deleteRating(Request $request, $countryCode)
     {
@@ -108,10 +121,7 @@ class CountryRatingController extends Controller
         }
 
         $rating->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Valoración eliminada',
-            'flash' => 'Review deleted successfully.',
-        ]);
+
+        return response()->json(['success' => true, 'message' => 'Review successfully deleted']);
     }
 }

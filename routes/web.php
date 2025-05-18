@@ -5,15 +5,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\CountryRatingController;
+use App\Models\CountryUserRating;
 
 Route::middleware('auth')->group(function () {
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/historial', [HistorialController::class, 'obtenerHistorial'])->name('historial.obtener');
-    Route::delete('/historial/{id}', [HistorialController::class, 'borrarHistorial'])->name('historial.borrar');
-    Route::delete('/historial', [HistorialController::class, 'borrarTodoHistorial'])->name('historial.borrarTodo');
+    Route::get('/historial', [HistorialController::class, 'userHistory'])->name('historial.obtener');
+    Route::delete('/historial/{id}', [HistorialController::class, 'deleteHistory'])->name('historial.borrar');
+    Route::delete('/historial', [HistorialController::class, 'deleteAllHistory'])->name('historial.borrarTodo');
+    Route::put('/country-ratings', [CountryRatingController::class, 'updateRating']);
+    Route::delete('/country-ratings/{countryCode}', [CountryRatingController::class, 'deleteRating']);
+    Route::post('/country-ratings', [CountryRatingController::class, 'storeRating']);
+    Route::get('/check-user-rating/{countryCode}', [CountryRatingController::class, 'checkUserRating']);
 });
 
 Route::get('/', function () {
@@ -21,7 +25,6 @@ Route::get('/', function () {
 });
 
 Route::get('/country/{nombre}', [CountryController::class, 'show'])->name('pais.show');
-
 
 Route::get('/weather-api-key', function () {
     return response()->json(['api_key' => env('VISUAL_CROSSING_API_KEY')]);
@@ -31,9 +34,11 @@ Route::get('/news-api-key', function () {
     return response()->json(['api_key' => env('NEWS_API_KEY')]);
 });
 Route::get('/country-ratings/{countryCode}', [CountryRatingController::class, 'showRatings']);
-Route::post('/country-ratings', [CountryRatingController::class, 'storeRating'])->middleware('auth');
-Route::get('/check-user-rating/{countryCode}', [CountryRatingController::class, 'checkUserRating'])->middleware('auth');
-Route::put('/country-ratings', [CountryRatingController::class, 'updateRating']);
-Route::delete('/country-ratings/{countryCode}', [CountryRatingController::class, 'deleteRating']);
+
+Route::get('/api/country-average-rating/{countryCode}', function ($countryCode) {
+    $average = CountryUserRating::where('country_code', $countryCode)->avg('rating');
+    return response()->json(['average_rating' => round($average, 1)]);
+});
+
 
 require __DIR__ . '/auth.php';

@@ -1,0 +1,391 @@
+/* General */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    color: white;
+}
+
+/* Logo */
+.countryinspectorsombra {
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease-in-out;
+    will-change: transform;
+    margin-top: 3rem;
+    image-rendering: auto;
+}
+
+.countryinspectorsombra::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse 100% 100% at center, rgba(51, 51, 51, 1) 0%, rgba(255, 255, 255, 0) 50%);
+    z-index: -1;
+    pointer-events: none;
+
+}
+
+.countryinspectorlogo {
+    position: relative;
+    z-index: 1;
+    will-change: transform;
+    image-rendering: auto;
+}
+
+.countryinspectorsombra:hover {
+    transform: scale(1.02);
+}
+
+
+.countryinspectorsombra:hover::before {
+    background: radial-gradient(ellipse 100% 100% at center, rgb(61, 61, 61) 0%, rgba(255, 255, 255, 0) 50%);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+/* Formularios Login y Logout */
+.login {
+    font-family: "Space Grotesk", sans-serif;
+    width: 350px;
+    height: 430px;
+    background: rgba(16, 15, 29, 0.85);
+    padding: 47px;
+    padding-bottom: 57px;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 1.3em;
+    margin: auto;
+    margin-top: 3rem;
+    box-shadow: 0 0 30px rgba(111, 71, 235, 0.3),
+        inset 0 0 15px rgba(138, 43, 226, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    position: relative;
+    animation: glow 3s infinite alternate;
+}
+
+.login::after {
+    content: '';
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #f5f5f5, #e0e0e0);
+    top: 20px;
+    right: 20px;
+    z-index: 1;
+}
+
+.login::before {
+    content: '';
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    background: linear-gradient(to right, rgba(16, 15, 29, 1) 72%, rgba(16, 15, 29, 0.85));
+    top: 15px;
+    right: 11px;
+    z-index: 2;
+    box-shadow: 0 0 8px rgba(16, 15, 29, 0.8);
+}
+
+.login input[type="text"],
+.login input[type="password"] {
+    opacity: 1;
+    display: block;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 13px 18px;
+    margin: 20px 0 0 0;
+    font-size: 0.8em;
+    border-radius: 100px;
+    background: rgba(60, 60, 60, 0.6);
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    transition: all 0.3s ease;
+}
+
+.login input[type="text"]:focus,
+.login input[type="password"]:focus {
+    background: rgba(70, 70, 90, 0.8);
+    box-shadow: 0 0 10px rgba(111, 71, 235, 0.5),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.h1 {
+    border: 0;
+    outline: 0;
+    width: 100%;
+    padding: 13px;
+    margin: 40px 0 0 0;
+    border-radius: 500px;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(173, 216, 230, 0.7);
+}
+
+.h1 {
+    padding: 0;
+    position: relative;
+    top: -35px;
+    display: block;
+    margin-bottom: -0px;
+    font-size: 1.3em;
+}
+
+.btn {
+    background: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb);
+    color: #fff;
+    padding: 16px !important;
+    width: 100%;
+    padding: 13px;
+    margin: 40px 0 0 0;
+    border-radius: 500px;
+    font-weight: 600;
+    border: none;
+    position: relative;
+    z-index: 1;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 15px rgba(91, 66, 243, 0.5);
+    margin-bottom: 20px !important;
+    font-size: 15px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    z-index: -1;
+    transition: all 0.6s ease;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 0 25px rgba(91, 66, 243, 0.8);
+    transform: translateY(-2px);
+}
+
+.ui {
+    font-weight: bolder;
+    background: -webkit-linear-gradient(#B563FF, #535EFC, #0EC8EE);
+    -webkit-text-fill-color: transparent;
+    border-bottom: 4px solid transparent;
+    border-image: linear-gradient(0.25turn, #535EFC, #0EC8EE, #0EC8EE);
+    border-image-slice: 1;
+    display: inline;
+    text-shadow: 0 0 15px rgba(14, 200, 238, 0.5);
+}
+
+.forgot-password-link {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.forgot-password-link:hover {
+    color: #B563FF;
+}
+
+.forgot-password {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+.input-error{
+    color: red;
+    font-size: 12px;
+    margin-top: 10px;
+}
+.register {
+    font-family: "Space Grotesk", sans-serif;
+    width: 350px;
+    height: 561px;
+    background: rgba(16, 15, 29, 0.85);
+    padding: 47px;
+    padding-bottom: 57px;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 1.3em;
+    margin: auto;
+    margin-top: 3rem;
+    box-shadow: 0 0 30px rgba(111, 71, 235, 0.3),
+        inset 0 0 15px rgba(138, 43, 226, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    position: relative;
+    animation: glow 3s infinite alternate;
+}
+
+.register p{
+    font-size: 20px;
+}
+.register::after {
+    content: '';
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #f5f5f5, #e0e0e0);
+    top: 20px;
+    right: 20px;
+    z-index: 1;
+}
+
+.register::before {
+    content: '';
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    background: linear-gradient(to right, rgba(16, 15, 29, 1) 72%, rgba(16, 15, 29, 0.85));
+    top: 15px;
+    right: 11px;
+    z-index: 2;
+    box-shadow: 0 0 8px rgba(16, 15, 29, 0.8);
+}
+
+.register input[type="text"],
+.register input[type="password"] {
+    opacity: 1;
+    display: block;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 13px 18px;
+    margin: 20px 0 0 0;
+    font-size: 0.8em;
+    border-radius: 100px;
+    background: rgba(60, 60, 60, 0.6);
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    transition: all 0.3s ease;
+}
+
+.register input[type="text"]:focus,
+.register input[type="password"]:focus {
+    background: rgba(70, 70, 90, 0.8);
+    box-shadow: 0 0 10px rgba(111, 71, 235, 0.5),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+/* Toast */
+.toast-success {
+    background-color: #007BFF !important;
+}
+.toast-error {
+    background-color: #cf3b3b !important;
+}
+.toast-top-center {
+    top: 1rem !important;
+}
+#toast-container>div {
+    opacity: 1 !important;
+    filter: none !important;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+}
+
+
+/* Animaciones */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 20px rgba(111, 71, 235, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 35px rgba(111, 71, 235, 0.7);
+    }
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .login {
+        width: 85%;
+        padding: 2.5em;
+        height: auto;
+        margin: 0 auto;
+    }
+}
+
+.session-status {
+    max-width: 400px;
+    margin: 1rem auto;
+    background-color: #d1fae5;
+    /* Green 100 */
+    border: 1px solid #10b981;
+    /* Green 500 */
+    color: #065f46;
+    /* Green 800 */
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.icons-container {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .globe-container {
+        width: 100%;
+        height: auto;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .countryinspectorlogo {
+        transform: scale(0.75);
+    }
+
+    .countryinspectorsombra {
+        margin-top: 0;
+    }
+
+}

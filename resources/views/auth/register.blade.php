@@ -1,52 +1,111 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+@extends('layouts.app')
+
+@section('title', 'Country Inspector | Register')
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/forms.css') }}">
+@endsection
+
+@section('contenido')
+<div class="register wrap">
+    <div class="h1">Register</div>
+
+    <form class="login-form" method="POST" action="{{ route('register') }}">
         @csrf
 
         <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-
+        <input
+            id="name"
+            type="text"
+            name="name"
+            placeholder="Name"
+            value="{{ old('name') }}"
+            required
+            autofocus
+            autocomplete="name">
         <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <input
+            id="email"
+            type="text"
+            name="email"
+            value="{{ old('email') }}"
+            placeholder="Email"
+            required
+            autofocus
+            autocomplete="username"
+            pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$">
 
         <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+        <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            autocomplete="new-password">
 
         <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+        <input
+            id="password_confirmation"
+            type="password"
+            name="password_confirmation"
+            placeholder="Confirm Password"
+            required
+            autocomplete="new-password">
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+        <!-- Submit -->
+        <input value="Register" class="btn" type="submit">
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
+        <!-- Already registered -->
+        <a href="{{ route('login') }}" class="forgot-password-link">
+            {{ __('Already registered?') }}
+        </a>
     </form>
-</x-guest-layout>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if(isMobile) {
+        toastr.options = {
+            progressBar: true,
+            timeOut: 5000,
+            extendedTimeOut: 2000,
+            positionClass: 'toast-top-center'
+        }
+    } else{
+        toastr.options = {
+            progressBar: true,
+            timeOut: 5000,
+            extendedTimeOut: 2000,
+            positionClass: 'toast-top-right'
+        }
+    }
+
+    @if($errors -> any())
+    @foreach($errors -> all() as $error)
+    toastr.error("{{ $error }}", "Error", {
+        closeButton: true,
+        progressBar: true,
+        timeOut: 5000,
+    });
+    @endforeach
+    @endif
+
+    @if(session('status'))
+    toastr.info("{{ session('status') }}", "Info", {
+        closeButton: true,
+        progressBar: true,
+    });
+    @endif
+
+    @if(session('success'))
+    toastr.success("{{ session('success') }}", "Éxito", {
+        closeButton: true,
+        progressBar: true,
+    });
+    @endif
+</script>
+
+@endsection

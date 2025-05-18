@@ -80,7 +80,6 @@ h1 {
 .icons-container {
     display: flex;
     gap: 1rem;
-    /* Espacio entre los íconos */
     align-items: center;
 }
 

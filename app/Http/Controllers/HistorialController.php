@@ -7,16 +7,15 @@ use App\Models\Historial;
 class HistorialController extends Controller
 {
 
-    public function obtenerHistorial()
+    public function userHistory()
     {
         $historial = auth()->user()->historial()->latest()->take(10)->get();
-        
         return response()->json([
             'success' => true,
-            'historial' => $historial
+            'historial' => $historial,
         ]);
     }
- public function borrarHistorial(Request $request)
+ public function deleteHistory(Request $request)
     {
         $request->validate([
             'id' => 'required|integer|exists:historial,id'
@@ -41,7 +40,7 @@ class HistorialController extends Controller
         ]);
     }
 
-    public function borrarTodoHistorial()
+    public function deleteAllHistory()
     {
         $count = auth()->user()->historial()->delete();
 

@@ -72,8 +72,17 @@
         </div>
     </div>
 </div>
+<div id="confirmModal" style="display:none;">
+    <div class="confirmation-modal">
+        <p>Are you sure you want to delete your rating?</p>
+        <button id="confirmYes" style="margin-right:10px;">Yes</button>
+        <button id="confirmNo">No</button>
+    </div>
+</div>
 
 @section('scripts')
+
+
 <script>
     const countryNameBlade = "{{ $nombre }}";
     document.title = `Country Inspector | ${countryNameBlade}`;

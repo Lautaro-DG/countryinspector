@@ -3,24 +3,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const historyModal = document.getElementById('history-modal');
     const closeModal = document.querySelector('.close-modal');
     const historyList = document.getElementById('history-list');
-
     let isModalOpen = false;
 
     historyIcon.addEventListener('click', function () {
         cargarHistorialUsuario();
-
-        historyModal.style.display = 'block';
-        isModalOpen = true;
-
-        if (!document.getElementById('clear-all-history')) {
-            const modalHeader = document.querySelector('.modal-content h2').parentNode;
-            const clearAllBtn = document.createElement('button');
-            clearAllBtn.id = 'clear-all-history';
-            clearAllBtn.className = 'clear-all-btn';
-            clearAllBtn.innerHTML = 'Clear';
-            clearAllBtn.addEventListener('click', borrarTodoHistorial);
-            modalHeader.insertBefore(clearAllBtn, document.querySelector('.modal-content h2').nextSibling);
-        }
     });
 
     closeModal.addEventListener('click', function () {
@@ -35,9 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    /* Función para cargar el historial del usuario mediante AJAX */
     function cargarHistorialUsuario() {
-        // Mostrar indicador de carga
         historyList.innerHTML = '<p class="loading-text"><i class="fas fa-spinner fa-spin"></i> Cargando historial...</p>';
 
         fetch('/historial', {
@@ -48,35 +32,54 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    historyList.innerHTML = '';
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403 || (response.redirected && response.url.includes('/login'))) {
+                    throw new Error('unauthenticated');
+                }
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // ✅ Solo aquí abrimos el modal
+                historyModal.style.display = 'block';
+                isModalOpen = true;
 
-                    if (data.historial.length === 0) {
-                        historyList.innerHTML = '<p>No hay registros en tu historial.</p>';
-                        return;
+                if (!document.getElementById('clear-all-history')) {
+                    const modalHeader = document.querySelector('.modal-content h2').parentNode;
+                    const clearAllBtn = document.createElement('button');
+                    clearAllBtn.id = 'clear-all-history';
+                    clearAllBtn.className = 'clear-all-btn';
+                    clearAllBtn.innerHTML = 'Clear';
+                    clearAllBtn.addEventListener('click', borrarTodoHistorial);
+                    modalHeader.insertBefore(clearAllBtn, document.querySelector('.modal-content h2').nextSibling);
+                }
+
+                historyList.innerHTML = '';
+
+                if (data.historial.length === 0) {
+                    historyList.innerHTML = '<p>No records in your history.</p>';
+                    return;
+                }
+
+                const ul = document.createElement('ul');
+                ul.className = 'history-items';
+
+                data.historial.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'history-item';
+                    let countryName = '';
+                    let countryUrl = '';
+                    if (item.pagina_visitada) {
+                        countryUrl = item.pagina_visitada;
+                        const urlParts = item.pagina_visitada.split('/');
+                        if (urlParts.length >= 3) {
+                            countryName = formatCountryName(urlParts[2]);
+                        }
                     }
 
-                    const ul = document.createElement('ul');
-                    ul.className = 'history-items';
-
-                    data.historial.forEach(item => {
-                        const li = document.createElement('li');
-                        li.className = 'history-item';
-
-                        let countryName = '';
-                        let countryUrl = '';
-                        if (item.pagina_visitada) {
-                            countryUrl = item.pagina_visitada; // Guardar la URL completa
-                            const urlParts = item.pagina_visitada.split('/');
-                            if (urlParts.length >= 3) {
-                                countryName = urlParts[2];
-                                countryName = formatCountryName(countryName);
-                            }
-                        }
-
-                        li.innerHTML = `
+                    li.innerHTML = `
                         <div class="country-flag">
                             <img src="/api/placeholder/24/16" alt="Flag" class="flag-img skeleton">
                         </div>
@@ -87,69 +90,60 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     `;
 
-                        li.dataset.historialId = item.id;
+                    li.dataset.historialId = item.id;
 
-                        if (countryName) {
-                            const apiCountryName = item.pagina_visitada.split('/')[2];
+                    if (countryName) {
+                        const apiCountryName = item.pagina_visitada.split('/')[2];
+                        const optimizedName = optimizeCountryNameForApi(apiCountryName);
 
-                            const optimizedName = optimizeCountryNameForApi(apiCountryName);
+                        fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(optimizedName)}?fullText=true`)
+                            .then(response => {
+                                if (!response.ok) {
+                                    return fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(optimizedName)}`);
+                                }
+                                return response;
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                const flagImg = li.querySelector('.flag-img');
+                                if (data[0]?.flags) {
+                                    flagImg.src = data[0].flags.svg || data[0].flags.png;
+                                    flagImg.classList.remove('skeleton');
+                                    flagImg.alt = `Bandera de ${countryName}`;
+                                }
+                            })
+                            .catch(err => console.warn(`No se pudo cargar la bandera para ${countryName}`, err));
+                    }
 
-                            fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(optimizedName)}?fullText=true`)
-                                .then(response => {
-                                    if (!response.ok) {
-                                        return fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(optimizedName)}`);
-                                    }
-                                    return response;
-                                })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error('País no encontrado');
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    if (data && data[0] && data[0].flags) {
-                                        const flagImg = li.querySelector('.flag-img');
-                                        flagImg.src = data[0].flags.svg || data[0].flags.png;
-                                        flagImg.classList.remove('skeleton');
-                                        flagImg.alt = `Bandera de ${countryName}`;
-                                    }
-                                })
-                                .catch(error => {
-                                    console.warn(`No se pudo cargar la bandera para ${countryName}:`, error);
-                                });
+                    li.addEventListener('click', function (e) {
+                        if (!e.target.closest('.delete-icon') && countryUrl) {
+                            window.location.href = countryUrl;
                         }
-
-                        li.addEventListener('click', function (e) {
-                            if (e.target.closest('.delete-icon')) {
-                                return;
-                            }
-
-                            if (countryUrl) {
-                                window.location.href = countryUrl;
-                            }
-                        });
-
-                        const deleteBtn = li.querySelector('.delete-icon');
-                        deleteBtn.addEventListener('click', function (e) {
-                            e.stopPropagation();
-                            const historialId = li.dataset.historialId;
-                            borrarHistorial(historialId, li);
-                        });
-
-                        ul.appendChild(li);
                     });
 
-                    historyList.appendChild(ul);
-                } else {
-                    historyList.innerHTML = '<p>Error al cargar el historial.</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Error al cargar el historial:', error);
-                historyList.innerHTML = '<p>Error al cargar el historial. Verifica tu conexión e inténtalo de nuevo.</p>';
-            });
+                    li.querySelector('.delete-icon').addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        borrarHistorial(li.dataset.historialId, li);
+                    });
+
+                    ul.appendChild(li);
+                });
+
+                historyList.appendChild(ul);
+            } else {
+                historyList.innerHTML = '<p>Error al cargar el historial.</p>';
+            }
+        })
+        .catch(error => {
+            if (error.message === 'unauthenticated') {
+                toastr.warning('Debes iniciar sesión para ver tu historial.', 'Acceso restringido');
+            } else {
+                toastr.error('Ocurrió un error al cargar el historial.', 'Error');
+            }
+            historyList.innerHTML = '';
+        });
     }
+
 
     /* Formatear fechas */
     function formatDate(dateString) {
@@ -204,9 +198,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* Función para borrar un elemento del historial */
     function borrarHistorial(historialId, elementoLi) {
-        if (!confirm('¿Estás seguro de que deseas eliminar este elemento del historial?')) {
-            return;
-        }
 
         elementoLi.classList.add('fading-out');
 
@@ -241,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         const historialItems = document.querySelectorAll('.history-items li');
                         if (historialItems.length === 0) {
-                            document.getElementById('history-list').innerHTML = '<p>No hay registros en tu historial.</p>';
+                            document.getElementById('history-list').innerHTML = '<p>No records in your history.</p>';
                         }
                     }, 300);
                 } else {
@@ -257,13 +248,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    /**
-     * Función para borrar todo el historial
-     */
+    /* Función para borrar todo el historial */
     function borrarTodoHistorial() {
-        if (!confirm('¿Estás seguro de que deseas borrar todo tu historial? Esta acción no se puede deshacer.')) {
-            return;
-        }
 
         fetch('/historial', {
             method: 'DELETE',
@@ -276,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('history-list').innerHTML = '<p>No hay registros en tu historial.</p>';
+                    document.getElementById('history-list').innerHTML = '<p>No records in your history.</p>';
                 }
             })
             .catch(error => {

@@ -1,12 +1,8 @@
 
 let easyMDE = null;
 
-
 function initCountryRatings(countryISO3) {
-    // Guardar el código del país en el body como data attribute para acceso fácil
     document.body.dataset.countryIso = countryISO3;
-
-    // Cargar las valoraciones existentes
     loadRatings(countryISO3);
 }
 
@@ -14,47 +10,122 @@ function initCountryRatings(countryISO3) {
  * Carga las valoraciones existentes para un país
  * @param {string} countryISO3 - Código ISO3 del país
  */
-function loadRatings(countryISO3) {
+// Variables globales para la paginación
+let currentPage = 1;
+let isLoading = false;
+let hasMoreRatings = true;
+let countryISOCode = null;
+
+function loadRatings(countryISO3, resetList = true) {
+    // Guardamos el código ISO para futuras cargas
+    countryISOCode = countryISO3;
+    
     const ratingsListElement = document.getElementById('ratings-list');
-
-    // Muestra el indicador de carga
-    ratingsListElement.innerHTML = '<img src="/img/loading.gif" class="cargar" alt="Cargando..." />';
-
-    // Cargar las valoraciones existentes
-    fetch(`/country-ratings/${countryISO3}`)
+    
+    // Si es una carga inicial, resetea la lista y la paginación
+    if (resetList) {
+        ratingsListElement.innerHTML = '<img src="/img/loading.gif" class="cargar" alt="Cargando..." />';
+        currentPage = 1;
+        hasMoreRatings = true;
+    }
+    
+    // Si ya estamos cargando o no hay más ratings, salimos
+    if (isLoading || !hasMoreRatings) {
+        return;
+    }
+    
+    // Marcamos que estamos cargando
+    isLoading = true;
+    
+    // Si no es resetList, añadimos un indicador de carga al final
+    if (!resetList) {
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.id = 'loading-more';
+        loadingIndicator.innerHTML = '<img src="/img/loading.gif" class="cargar" alt="Cargando más..." />';
+        ratingsListElement.appendChild(loadingIndicator);
+    }
+    
+    // Cargar las valoraciones con paginación
+    fetch(`/country-ratings/${countryISO3}?page=${currentPage}`)
         .then(res => res.json())
-        .then(ratings => {
+        .then(data => {
+            // Eliminar el indicador de carga si existe
+            const loadingIndicator = document.getElementById('loading-more');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
+            }
+            
+            // Actualizar el estado de paginación
+            hasMoreRatings = data.hasMore;
+            
+            // Generar el HTML para las nuevas reviews
             let html = '';
-            if (ratings.length === 0) {
+            
+            if (data.ratings.length === 0 && resetList) {
                 html = '<p>No reviews yet.</p>';
             } else {
-                ratings.forEach(r => {
+                data.ratings.forEach(r => {
                     html += `
-                        <div class="rating-entry">
-                            <strong>${r.user.name}</strong> - <em>${new Date(r.created_at).toLocaleDateString()}</em><br>
-                            <span>⭐ ${r.rating} / 5</span>
+                    <div class="rating-entry">
+                        <strong>${r.user.name}</strong> - <em>${new Date(r.created_at).toLocaleDateString()}</em><br>
+                        <span>⭐ ${r.rating} / 5</span>
                         <div class="review-markdown">${marked.parse(r.review)}</div>
-                        </div>
-                    `;
+                    </div>`;
                 });
             }
-
+            
             // Actualizamos la sección de valoraciones existentes
-            ratingsListElement.innerHTML = html;
-
-            // Verificar si el usuario actual ya ha valorado este país
-            checkUserRating(countryISO3);
+            if (resetList) {
+                ratingsListElement.innerHTML = html;
+            } else {
+                ratingsListElement.insertAdjacentHTML('beforeend', html);
+            }
+            
+            // Incrementamos la página para la próxima carga
+            currentPage++;
+            
+            // Marcamos que terminamos de cargar
+            isLoading = false;
+            
+            // Si es la primera carga, verificamos si el usuario ya ha valorado
+            if (resetList) {
+                checkUserRating(countryISO3);
+            }
         })
         .catch(err => {
             console.error('Error loading ratings:', err);
-            ratingsListElement.innerHTML = '<p>Error al cargar las valoraciones.</p>';
+            if (resetList) {
+                ratingsListElement.innerHTML = '<p>Error al cargar las valoraciones.</p>';
+            } else {
+                const loadingIndicator = document.getElementById('loading-more');
+                if (loadingIndicator) {
+                    loadingIndicator.innerHTML = '<p>Error al cargar más valoraciones.</p>';
+                }
+            }
+            isLoading = false;
         });
 }
 
-/**
- * Verifica si el usuario actual ya ha valorado este país
- * @param {string} countryISO3 - Código ISO3 del país
- */
+function setupInfiniteScroll() {
+    function checkScroll() {
+        const ratingsContainer = document.getElementById('ratings-list');
+        
+        if (!ratingsContainer) return;
+        
+        const containerBottom = ratingsContainer.getBoundingClientRect().bottom;
+        const windowHeight = window.innerHeight;
+        
+        if (containerBottom - windowHeight < 200 && !isLoading && hasMoreRatings && countryISOCode) {
+            loadRatings(countryISOCode, false);
+        }
+    }
+    
+    window.addEventListener('scroll', checkScroll);
+}
+
+document.addEventListener('DOMContentLoaded', setupInfiniteScroll);
+
+/* Verifica si el usuario actual ya ha valorado este país */
 function checkUserRating(countryISO3) {
     fetch(`/check-user-rating/${countryISO3}`, {
         credentials: 'same-origin'
@@ -63,7 +134,6 @@ function checkUserRating(countryISO3) {
         .then(data => {
             const section = document.getElementById('user-review-section');
 
-            // Eliminar el formulario de valoración predeterminado si existe
             const defaultForm = document.getElementById('rating-form');
             if (defaultForm) {
                 defaultForm.style.display = 'none';
@@ -74,7 +144,7 @@ function checkUserRating(countryISO3) {
                 const rating = data.rating;
                 section.innerHTML = `
                 <div id="user-review-readonly" class="p-3 border rounded bg-light">
-                    <h4>Your review:</h4>
+                    <h3>Your review:</h3>
                     <div class="star-rating">
                         ${'★'.repeat(rating.rating)}${'☆'.repeat(5 - rating.rating)}
                     </div>
@@ -93,12 +163,10 @@ function checkUserRating(countryISO3) {
             }
         })
         .catch(error => {
-            console.error('Error al comprobar valoración:', error);
-            // Si hay un error, probablemente el usuario no está autenticado
             const section = document.getElementById('user-review-section');
             section.innerHTML = `
             <div class="alert alert-warning">
-                Para valorar este país, por favor <a href="/login">inicia sesión</a> primero.
+               To rate this country, you need to <a href="/login">login</a> or <a href="/register">register</a> first.
             </div>
         `;
         });
@@ -112,7 +180,7 @@ function showRatingForm(data = null) {
     const section = document.getElementById('user-review-section');
     section.innerHTML = `
         <form id="rating-form" class="p-3 border rounded bg-light">
-            <h4>${data ? 'Update review' : 'Review country'}</h4>
+            <h3>${data ? 'Update review' : 'Review country'}</h3>
             <div id="star-container" class="mb-2 star-rating" style="font-size: 1.5rem; cursor: pointer; user-select: none;">
                 ${[1, 2, 3, 4, 5].map(i => `<span data-value="${i}" class="star">☆</span>`).join('')}
             </div>
@@ -227,6 +295,12 @@ function setupMDE() {
 
     if (isMobile) {
         config.toolbar = false;
+        toastr.options = {
+            progressBar: true,
+            timeOut: 5000,
+            extendedTimeOut: 2000,
+            positionClass: 'toast-top-center'
+        }
     } else {
         config.toolbar = [
             "bold", "italic", "heading", "|",
@@ -235,6 +309,12 @@ function setupMDE() {
             "preview", "|",
             "undo", "redo"
         ];
+        toastr.options = {
+            progressBar: true,
+            timeOut: 5000,
+            extendedTimeOut: 2000,
+            positionClass: 'toast-top-right'
+        }
     }
     easyMDE = new EasyMDE(config);
 }
@@ -293,12 +373,11 @@ function setupFormSubmission(isEdit) {
             })
             .then(data => {
                 if (data.success) {
-                    alert(data.message || 'Review saved.');
-                    // Recargar valoraciones y mostrar la nueva UI
+                    toastr.success(data.message);
                     checkUserRating(countryISO3);
                     loadRatings(countryISO3);
                 } else {
-                    alert(data.message || 'Error saving review.');
+                   toastr.error(data.message || 'Error saving review.');
                 }
             })
             .catch(err => {
@@ -316,21 +395,31 @@ function setupFormSubmission(isEdit) {
  * @param {string} countryISO3 - Código ISO3 del país
  */
 function deleteUserRating(countryISO3) {
-    if (!confirm('Are you sure you want to delete your rating?')) return;
+    const modal = document.getElementById('confirmModal');
+    const btnYes = document.getElementById('confirmYes');
+    const btnNo = document.getElementById('confirmNo');
 
-    fetch(`/country-ratings/${countryISO3}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json'
-        },
-        credentials: 'same-origin'
-    })
+    modal.style.display = 'flex';
+
+    btnNo.onclick = () => {
+        modal.style.display = 'none';
+    };
+
+    btnYes.onclick = () => {
+        modal.style.display = 'none';
+
+        fetch(`/country-ratings/${countryISO3}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert(data.message || 'Review deleted.');
-                showFlash(data.flash);
+                toastr.success(data.message);
                 loadRatings(countryISO3);
                 showRatingForm();
             } else {
@@ -341,7 +430,9 @@ function deleteUserRating(countryISO3) {
             console.error('Error deleting rating:', err);
             alert('Error deleting review.');
         });
+    };
 }
+
 
 // Exportar las funciones públicas
 window.initCountryRatings = initCountryRatings;
