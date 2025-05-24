@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <div class="countryinspectorsombra">
+        <div class="countryinspectorsombra" id="logo">
             <a href="/"><img src="{{ asset('img/countryinspectorlogo.png') }}" alt="Country Inspector Logo" class="countryinspectorlogo"></img></a>
         </div>
 

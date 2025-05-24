@@ -60,10 +60,14 @@
             </div>
         </div>
     </div>
-
+    <form id="compare-form" class="compare-form" method="GET" action="/compare">
+    @csrf
+    <input type="hidden" name="country1" id="country1">
     <div class="action-bar">
-        <button class="btn-comparar">COMPARAR</button>
+        <button type="submit" id="btn-comparar">COMPARE</button>
     </div>
+</form>
+
 </div>
 <!-- Modal para el clima -->
 <div id="weather-modal" class="modal hidden">

@@ -21,7 +21,7 @@ class ProfileController extends Controller
 
         $historial = Historial::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit(8)
             ->get();
 
         $reviews = CountryUserRating::where('user_id', $user->id)
@@ -53,9 +53,7 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+
 
         $user = $request->user();
 

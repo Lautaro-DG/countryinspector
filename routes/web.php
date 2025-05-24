@@ -9,7 +9,7 @@ use App\Models\CountryUserRating;
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/user/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/historial', [HistorialController::class, 'userHistory'])->name('historial.obtener');
     Route::delete('/historial/{id}', [HistorialController::class, 'deleteHistory'])->name('historial.borrar');
@@ -31,8 +31,9 @@ Route::get('/weather-api-key', function () {
 });
 
 Route::get('/news-api-key', function () {
-    return response()->json(['api_key' => env('NEWS_API_KEY')]);
+    return response()->json(['api_key' => config('services.news_api.key')]);
 });
+
 Route::get('/country-ratings/{countryCode}', [CountryRatingController::class, 'showRatings']);
 
 Route::get('/api/country-average-rating/{countryCode}', function ($countryCode) {
@@ -40,5 +41,6 @@ Route::get('/api/country-average-rating/{countryCode}', function ($countryCode) 
     return response()->json(['average_rating' => round($average, 1)]);
 });
 
+Route::get('/compare', [CountryController::class, 'compare']);
 
 require __DIR__ . '/auth.php';

@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'mapbox' => [
+        'token' => env('MAPBOX_TOKEN'),
+    ],
+    
+    'news_api' => [
+        'key' => env('NEWS_API_KEY'),
+    ],
+
+    'weather' => [
+        'key' => env('VISUAL_CROSSING_API_KEY'),
+    ],
+
 ];

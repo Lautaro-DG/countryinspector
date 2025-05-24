@@ -34,7 +34,7 @@
 @section('scripts') 
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script> 
 <script> 
-    mapboxgl.accessToken = '{{ env("MAPBOX_TOKEN") }}'; 
+    mapboxgl.accessToken = "{{ config('services.mapbox.token') }}";
 </script> 
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/user_history.js') }}"></script>

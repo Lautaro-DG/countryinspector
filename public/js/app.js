@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const globe = document.getElementById('globe');
     const searchInput = document.getElementById('search-input');
-    let countryList = []; // Lista de países que se llenará cuando el mapa cargue
-    let hoverDisabled = false; // Nueva variable para controlar si el hover está deshabilitado
+    let countryList = [];
+    let hoverDisabled = false;
 
     globe.classList.add('hidden');
 
@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
             globe.classList.add('animate__animated', 'animate__zoomIn');
         }, 100);
     });
-
     // Mapbox
     const map = new mapboxgl.Map({
         container: 'globe',
@@ -98,43 +97,43 @@ document.addEventListener('DOMContentLoaded', () => {
         let hoverTimeout;
         let hoveredCountry = null;
         let animationFrameId = null;
-        
+
         map.on('mousemove', 'countries-fill', (e) => {
-            if (!e.features.length || hoverDisabled) return; // No procesamos hover si está deshabilitado
-        
+            if (!e.features.length || hoverDisabled) return;
+
             const nombrePais = e.features[0].properties.name_en;
-        
+
             tooltip.style.display = 'block';
             tooltip.innerText = nombrePais;
             tooltip.style.left = `${e.originalEvent.pageX}px`;
             tooltip.style.top = `${e.originalEvent.pageY - 10}px`;
-        
+
             clearTimeout(hoverTimeout);
-            
+
             hoverTimeout = setTimeout(() => {
                 hoveredCountry = nombrePais;
-        
+
                 if (!animationFrameId) {
                     animationFrameId = requestAnimationFrame(() => {
                         map.setFilter('country-hover', ['==', 'name_en', hoveredCountry]);
                         animationFrameId = null;
                     });
                 }
-            }, 15); 
-        
+            }, 15);
+
             map.getCanvas().style.cursor = 'pointer';
         });
-        
+
         map.on('mouseleave', 'countries-fill', () => {
-            if (hoverDisabled) return; // No quitamos el hover si está deshabilitado
-            
+            if (hoverDisabled) return;
+
             clearTimeout(hoverTimeout);
             hoveredCountry = null;
             map.setFilter('country-hover', ['==', 'name_en', '']);
             tooltip.style.display = 'none';
             map.getCanvas().style.cursor = '';
         });
-        
+
         map.on('click', 'countries-fill', (e) => {
             if (!e.features.length) return;
 
@@ -160,16 +159,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function fetchCountriesFromMap() {
         const checkForCountries = setInterval(() => {
             const features = map.querySourceFeatures('countries', { sourceLayer: 'country_boundaries' });
-            
+
             features.forEach(feature => {
                 if (feature.properties.name_en && !countryList.includes(feature.properties.name_en)) {
                     countryList.push(feature.properties.name_en);
                 }
             });
-            
+
             if (countryList.length > 0) {
                 clearInterval(checkForCountries);
-                countryList.sort(); 
+                countryList.sort();
             }
         }, 1000);
     }
@@ -186,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
         suggestionsContainer.innerHTML = '';
-        
+
         if (searchTerm.length < 2) {
             suggestionsContainer.style.display = 'none';
             if (!hoverDisabled) {
@@ -194,43 +193,43 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return;
         }
-        
+
         // Actualizar posición de las sugerencias
         const inputRect = searchInput.getBoundingClientRect();
         suggestionsContainer.style.top = inputRect.height + 'px';
         suggestionsContainer.style.width = inputRect.width + 'px';
 
-        const filteredCountries = countryList.filter(country => 
+        const filteredCountries = countryList.filter(country =>
             country.toLowerCase().includes(searchTerm)
-        ).slice(0, 5); 
-        
+        ).slice(0, 5);
+
         if (filteredCountries.length > 0) {
             suggestionsContainer.style.display = 'block';
-            suggestionsContainer.style.color = '#333'; 
-            
+            suggestionsContainer.style.color = '#333';
+
             filteredCountries.forEach(country => {
                 const suggestionItem = document.createElement('div');
                 suggestionItem.className = 'suggestion-item';
                 suggestionItem.innerText = country;
-                
+
                 suggestionItem.addEventListener('click', () => {
                     searchInput.value = country;
                     suggestionsContainer.style.display = 'none';
-                    
+
                     // Resaltar el país seleccionado
                     map.setFilter('country-hover', ['==', 'name_en', country]);
-                    
+
                     // Deshabilitar el hover por 3 segundos
                     disableHoverTemporarily(1500);
-                    
-                    const features = map.querySourceFeatures('countries', { 
+
+                    const features = map.querySourceFeatures('countries', {
                         sourceLayer: 'country_boundaries',
                         filter: ['==', 'name_en', country]
                     });
-                    
+
                     if (features.length > 0) {
                         const bounds = new mapboxgl.LngLatBounds();
-                        
+
                         features.forEach(feature => {
                             if (feature.geometry && feature.geometry.coordinates) {
                                 if (feature.geometry.type === 'Polygon') {
@@ -246,38 +245,38 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             }
                         });
-                        
+
                         if (!bounds.isEmpty()) {
                             map.fitBounds(bounds, {
                                 padding: 50,
                                 maxZoom: 3,
                                 duration: 1000,
-                                essential: true 
+                                essential: true
                             });
                         }
                     }
                 });
-                
+
                 suggestionsContainer.appendChild(suggestionItem);
             });
         } else {
             suggestionsContainer.style.display = 'none';
         }
     });
-    
+
     document.addEventListener('click', (e) => {
         if (e.target !== searchInput && e.target !== suggestionsContainer) {
             suggestionsContainer.style.display = 'none';
         }
     });
-    
+
     searchInput.addEventListener('keydown', (e) => {
         const suggestions = suggestionsContainer.querySelectorAll('.suggestion-item');
-        
+
         if (suggestions.length === 0) return;
-        
+
         const current = suggestionsContainer.querySelector('.suggestion-item.active');
-        
+
         if (e.key === 'ArrowDown') {
             e.preventDefault();
             if (!current) {
@@ -303,11 +302,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (e.key === 'Enter') {
             if (current) {
                 e.preventDefault();
-                
+
                 const countryName = current.innerText;
                 map.setFilter('country-hover', ['==', 'name_en', countryName]);
                 disableHoverTemporarily(3000);
-                
+
                 current.click();
             }
         } else if (e.key === 'Escape') {

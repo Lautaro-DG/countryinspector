@@ -6,38 +6,29 @@ function initCountryRatings(countryISO3) {
     loadRatings(countryISO3);
 }
 
-/**
- * Carga las valoraciones existentes para un país
- * @param {string} countryISO3 - Código ISO3 del país
- */
-// Variables globales para la paginación
+/* Cargar las valoraciones existentes para un país */
 let currentPage = 1;
 let isLoading = false;
 let hasMoreRatings = true;
 let countryISOCode = null;
 
 function loadRatings(countryISO3, resetList = true) {
-    // Guardamos el código ISO para futuras cargas
     countryISOCode = countryISO3;
     
     const ratingsListElement = document.getElementById('ratings-list');
     
-    // Si es una carga inicial, resetea la lista y la paginación
     if (resetList) {
         ratingsListElement.innerHTML = '<img src="/img/loading.gif" class="cargar" alt="Cargando..." />';
         currentPage = 1;
         hasMoreRatings = true;
     }
     
-    // Si ya estamos cargando o no hay más ratings, salimos
     if (isLoading || !hasMoreRatings) {
         return;
     }
     
-    // Marcamos que estamos cargando
     isLoading = true;
     
-    // Si no es resetList, añadimos un indicador de carga al final
     if (!resetList) {
         const loadingIndicator = document.createElement('div');
         loadingIndicator.id = 'loading-more';
@@ -49,16 +40,13 @@ function loadRatings(countryISO3, resetList = true) {
     fetch(`/country-ratings/${countryISO3}?page=${currentPage}`)
         .then(res => res.json())
         .then(data => {
-            // Eliminar el indicador de carga si existe
             const loadingIndicator = document.getElementById('loading-more');
             if (loadingIndicator) {
                 loadingIndicator.remove();
             }
             
-            // Actualizar el estado de paginación
             hasMoreRatings = data.hasMore;
             
-            // Generar el HTML para las nuevas reviews
             let html = '';
             
             if (data.ratings.length === 0 && resetList) {
@@ -74,20 +62,16 @@ function loadRatings(countryISO3, resetList = true) {
                 });
             }
             
-            // Actualizamos la sección de valoraciones existentes
             if (resetList) {
                 ratingsListElement.innerHTML = html;
             } else {
                 ratingsListElement.insertAdjacentHTML('beforeend', html);
             }
             
-            // Incrementamos la página para la próxima carga
             currentPage++;
             
-            // Marcamos que terminamos de cargar
             isLoading = false;
             
-            // Si es la primera carga, verificamos si el usuario ya ha valorado
             if (resetList) {
                 checkUserRating(countryISO3);
             }
@@ -140,7 +124,6 @@ function checkUserRating(countryISO3) {
             }
 
             if (data.hasRated) {
-                // El usuario ya ha valorado este país, mostrar la valoración existente
                 const rating = data.rating;
                 section.innerHTML = `
                 <div id="user-review-readonly" class="p-3 border rounded bg-light">
@@ -154,11 +137,9 @@ function checkUserRating(countryISO3) {
                 </div>
             `;
 
-                // Configurar botones de acción
                 document.getElementById('edit-rating').addEventListener('click', () => showRatingForm(rating));
                 document.getElementById('delete-rating').addEventListener('click', () => deleteUserRating(countryISO3));
             } else {
-                // El usuario no ha valorado este país, mostrar formulario
                 showRatingForm();
             }
         })
@@ -172,10 +153,7 @@ function checkUserRating(countryISO3) {
         });
 }
 
-/**
- * Muestra el formulario para valorar o editar una valoración
- * @param {Object} data - Datos de la valoración existente (opcional)
- */
+/* Muestra el formulario para valorar o editar una valoración */
 function showRatingForm(data = null) {
     const section = document.getElementById('user-review-section');
     section.innerHTML = `
@@ -197,7 +175,6 @@ function showRatingForm(data = null) {
     setupMDE();
     setupFormSubmission(data !== null);
 
-    // Si hay un botón de cancelar, configurar su evento
     const cancelButton = document.getElementById('cancel-edit');
     if (cancelButton) {
         cancelButton.addEventListener('click', () => {
@@ -207,61 +184,47 @@ function showRatingForm(data = null) {
     }
 }
 
-/**
- * Configura el sistema de valoración por estrellas
- */
+/* Configura el sistema de valoración por estrellas */
 function setupStarRating() {
     const stars = document.querySelectorAll('.star');
     const ratingInput = document.getElementById('rating-value');
 
     stars.forEach(star => {
-        // Evento click
         star.addEventListener('click', () => {
             const value = parseInt(star.dataset.value);
             ratingInput.value = value;
             updateStars(value);
         });
 
-        // Evento hover
         star.addEventListener('mouseover', () => {
             const value = parseInt(star.dataset.value);
             highlightStars(value);
         });
 
-        // Restablecer al quitar hover
         star.addEventListener('mouseout', () => {
             const currentRating = parseInt(ratingInput.value, 10);
             updateStars(currentRating);
         });
     });
 
-    // Rellenar según valor actual
     const currentRating = parseInt(ratingInput.value);
     updateStars(currentRating);
 }
 
-/**
- * Actualiza las estrellas según el valor seleccionado
- * @param {number} value - Valor de la valoración (1-5)
- */
+/* Actualizar las estrellas según el valor seleccionado */
 function updateStars(value) {
     const stars = document.querySelectorAll('.star');
 
     stars.forEach((star, index) => {
         if (index + 1 <= value) {
-            // Estrella llena: ★
             star.textContent = '★';
         } else {
-            // Estrella vacía: ☆
             star.textContent = '☆';
         }
     });
 }
 
-/**
- * Resalta estrellas al hacer hover
- * @param {number} value - Valor sobre el que se está haciendo hover
- */
+/* Resaltar estrellas al hacer hover */
 function highlightStars(value) {
     const stars = document.querySelectorAll('.star');
 
@@ -274,9 +237,7 @@ function highlightStars(value) {
     });
 }
 
-/**
- * Configura el editor Markdown
- */
+/* Configura el editor Markdown */
 function setupMDE() {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
@@ -319,10 +280,7 @@ function setupMDE() {
     easyMDE = new EasyMDE(config);
 }
 
-/**
- * Configura la lógica de envío del formulario
- * @param {boolean} isEdit - Indica si es una edición
- */
+/* Configura la lógica de envío del formulario */
 function setupFormSubmission(isEdit) {
     const form = document.getElementById('rating-form');
     form.addEventListener('submit', function (e) {
@@ -362,10 +320,9 @@ function setupFormSubmission(isEdit) {
             })
         })
             .then(res => {
-                // Verificar si la respuesta es un redirect (probablemente a login)
                 if (res.redirected) {
                     alert('You need to be logged in to rate a country.');
-                    window.location.href = res.url; // Redirigir al login
+                    window.location.href = res.url;
                     return Promise.reject('Redirect to login');
                 }
 
@@ -381,7 +338,6 @@ function setupFormSubmission(isEdit) {
                 }
             })
             .catch(err => {
-                // No mostrar error si fue por redirección (ya manejado arriba)
                 if (err === 'Redirect to login') return;
 
                 console.error('Error saving rating:', err);
@@ -390,10 +346,7 @@ function setupFormSubmission(isEdit) {
     });
 }
 
-/**
- * Elimina la valoración del usuario
- * @param {string} countryISO3 - Código ISO3 del país
- */
+/* Elimina la valoración del usuario */
 function deleteUserRating(countryISO3) {
     const modal = document.getElementById('confirmModal');
     const btnYes = document.getElementById('confirmYes');

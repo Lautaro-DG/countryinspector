@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const capital = country.capital ? country.capital[0] : '';
             const countryISO2 = country.cca2;
+            document.getElementById('country1').value = countryISO2;
 
             fetch(`/api/country-average-rating/${countryISO2}`)
                 .then(res => res.json())
